@@ -1,4 +1,4 @@
-# 👻 PhantomDrive - Virtual Disk Manager
+# RPMulate - Virtual Disk Manager
 
 A Windows desktop application (WPF / .NET 8) that lets you mount disc images as virtual drives with **realistic speed emulation** for CD, DVD, Blu-ray, and floppy media.
 
@@ -62,7 +62,7 @@ All speed values are based on real-world hardware specifications:
 ## Architecture
 
 ```
-PhantomDrive/
+RPMulate/
 ├-- Models/
 │   └-- Models.cs            # DriveMediaType, SpeedProfile, ImageFormats, VirtualDrive
 ├-- ViewModels/
@@ -103,7 +103,7 @@ For the broadest format support (BIN/CUE, NRG, MDS, floppy images), install **Im
 
 ### Build
 ```bash
-cd PhantomDrive
+cd RPMulate
 dotnet restore
 dotnet build --configuration Release
 ```
@@ -122,7 +122,7 @@ dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true 
 
 ## Usage
 
-1. **Launch** PhantomDrive
+1. **Launch** RPMulate
 2. **Load an image**: Click **Browse** or drag-and-drop a disc image onto a drive slot
 3. The app auto-detects media type (floppy/CD/DVD/BD) from the file size and extension
 4. **Select speed**: Choose a realistic speed profile or **MAX** for unthrottled access
