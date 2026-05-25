@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+	<PackageReference Include="DiscUtils.FAT" Version="0.16.13" />
     <PackageReference Include="DiscUtils.Iso9660" Version="0.16.13" />
     <PackageReference Include="DiscUtils.Udf" Version="0.16.13" />
     <PackageReference Include="DiscUtils.Vhd" Version="0.16.13" />

@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using RPMulate.Models;
 using RPMulate.Services;
+using Windows.Graphics.Printing3D;
 
 namespace RPMulate.ViewModels;
 
@@ -75,10 +76,14 @@ public class DriveSlotViewModel : INotifyPropertyChanged
     private readonly DriveService _driveService;
     private CancellationTokenSource? _cts;
 
-    public DriveSlotViewModel(int index, DriveService driveService)
+    private readonly Action<DriveSlotViewModel>? _removeSlot;
+
+    public DriveSlotViewModel(int index, DriveService driveService,
+        Action<DriveSlotViewModel>? removeSlot = null)
     {
         SlotIndex = index;
         _driveService = driveService;
+        _removeSlot = removeSlot;
         MediaType = DriveMediaType.CD_ROM;
         UpdateAvailableSpeeds();
     }
@@ -182,6 +187,11 @@ public class DriveSlotViewModel : INotifyPropertyChanged
     public ICommand ClearCommand => _clearCommand ??= new RelayCommand(
         _ => ClearImage(),
         _ => Status == DriveStatus.Empty && HasImage);
+
+    private RelayCommand? _removeCommand;
+    public ICommand RemoveCommand => _removeCommand ??= new RelayCommand(
+        _ => _removeSlot?.Invoke(this),
+        _ => Status == DriveStatus.Empty);
 
     // -- Logic -------------------------------------------------------
     public void SetImage(string path)
@@ -330,7 +340,7 @@ public class MainViewModel : INotifyPropertyChanged
     public Version AppVersion
     {
         get;
-    } = typeof(MainViewModel).Assembly.GetName().Version;
+    } = Assembly.GetExecutingAssembly().GetName().Version ?? new Version(AppHelpers.Version.Major, AppHelpers.Version.Minor, AppHelpers.Version.Build);
 
 
     public ObservableCollection<DriveSlotViewModel> DriveSlots { get; } = new();
@@ -348,18 +358,24 @@ public class MainViewModel : INotifyPropertyChanged
         _ =>
         {
             if (DriveSlots.Count >= 8) return; // cap at 8 virtual drives
-            DriveSlots.Add(new DriveSlotViewModel(DriveSlots.Count, _driveService));
+            DriveSlots.Add(new DriveSlotViewModel(
+                DriveSlots.Count,
+                _driveService,
+                removeSlot: RemoveSlot));
         },
         _ => DriveSlots.Count < 8);
 
-    private RelayCommand? _removeSlotCommand;
-    public ICommand RemoveSlotCommand => _removeSlotCommand ??= new RelayCommand(
-        _ =>
+    // Add these methods after the AddSlotCommand:
+    private void RemoveSlot(DriveSlotViewModel slot)
+    {
+        if (slot.IsEmpty && DriveSlots.Count > 1)
         {
-            if (SelectedSlot is not null && SelectedSlot.IsEmpty)
-                DriveSlots.Remove(SelectedSlot);
-        },
-        _ => SelectedSlot is not null && SelectedSlot.IsEmpty && DriveSlots.Count > 1);
+            DriveSlots.Remove(slot);
+            // Re-index remaining slots
+            for (int i = 0; i < DriveSlots.Count; i++)
+                DriveSlots[i].SlotIndex = i;
+        }
+    }
 
     private AsyncRelayCommand? _ejectAllCommand;
     public ICommand EjectAllCommand => _ejectAllCommand ??= new AsyncRelayCommand(
