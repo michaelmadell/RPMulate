@@ -8,17 +8,17 @@
     <Title>RPMulate - Mount disk images. Emulate drive behavior.</Title>
     <AssemblyName>RPMulate</AssemblyName>
     <RootNamespace>RPMulate</RootNamespace>
-    <Version>2026.3.1</Version>
+    <Version>20.26.5.1</Version>
     <Description>Mount and manage virtual disk drives with realistic speed emulation</Description>
     <StartupObject>RPMulate.App</StartupObject>
-    <AssemblyVersion>20.26.3.1</AssemblyVersion>
-    <FileVersion>20.26.3.1</FileVersion>
+    <AssemblyVersion>20.26.5.1</AssemblyVersion>
+    <FileVersion>20.26.5.1</FileVersion>
     <PlatformTarget>x64</PlatformTarget>
     <Nullable>enable</Nullable>
     <Company>Monkeys 3DPrints</Company>
     <Authors>Michael Madell</Authors>
     <PackageProjectUrl>https://github.com/michaelmadell/RPMulate</PackageProjectUrl>
-    <PackageIcon>ghost.png</PackageIcon>
+    <PackageIcon>App.png</PackageIcon>
     <RepositoryUrl>https://github.com/michaelmadell/RPMulate</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
@@ -51,10 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\ghost.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Assets\app.ico" />
   </ItemGroup>
 
@@ -63,6 +59,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\App.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="Assets\ghost.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
