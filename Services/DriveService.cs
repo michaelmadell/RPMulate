@@ -6,6 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using RPMulate.Models;
 
+using DiscUtils;
+using DiscUtils.Fat;
+using DiscUtils.Vhd;
+using CommunityToolkit.Mvvm.Messaging;
+using System.Collections.Generic;
+
 namespace RPMulate.Services;
 
 /// <summary>
@@ -85,6 +91,11 @@ public class DriveService : IDisposable
         if (ext is ".vhd" or ".vhdx")
             return await Task.Run(() => MountViaVirtDiskApi(imagePath), ct);
 
+        if (ext is ".ima" or ".img" or ".vfd" or ".flp" &&
+            mediaType is DriveMediaType.Floppy35DD or DriveMediaType.Floppy35HD
+                     or DriveMediaType.Floppy525DD or DriveMediaType.Floppy525HD)
+            return await MountViaDiscUtils(imagePath, mediaType, ct);
+
         // Strategy 4: Fallback – copy to temp VHD wrapper
         throw new NotSupportedException(
             $"No suitable mount backend found for '{ext}'. " +
@@ -97,6 +108,32 @@ public class DriveService : IDisposable
     /// </summary>
     public async Task UnmountAsync(char driveLetter, CancellationToken ct = default)
     {
+        // Check if this was a SUBST-mounted floppy
+        if (_mountedTempDirs.TryGetValue(driveLetter, out var tempDir))
+        {
+            // Remove SUBST mapping
+            var substCommand = $"subst {driveLetter}: /D";
+            var psi = new ProcessStartInfo("cmd.exe", $"/c {substCommand}")
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            using var proc = Process.Start(psi);
+            await proc.WaitForExitAsync(ct);
+
+            // Clean up temp directory
+            try
+            {
+                if (Directory.Exists(tempDir))
+                    Directory.Delete(tempDir, true);
+            }
+            catch { /* Ignore cleanup errors */ }
+
+            _mountedTempDirs.Remove(driveLetter);
+            return;
+        }
+
         // Try PowerShell Dismount first
         var script = $"Dismount-DiskImage -DevicePath \"\\\\.\\{driveLetter}:\" -ErrorAction SilentlyContinue; " +
                      $"Get-DiskImage | Where-Object {{ $_.DevicePath -like '*{driveLetter}*' }} | Dismount-DiskImage -ErrorAction SilentlyContinue";
@@ -182,6 +219,97 @@ public class DriveService : IDisposable
         System.Threading.Thread.Sleep(1500);
         return FindNewlyMountedDrive();
     }
+
+    private async Task<char> MountViaDiscUtils(string imagePath, DriveMediaType mediaType, CancellationToken ct)
+    {
+        var letter = FindAvailableDriveLetter();
+        var ext = Path.GetExtension(imagePath).ToLowerInvariant();
+
+        if (mediaType is DriveMediaType.Floppy35DD or DriveMediaType.Floppy35HD
+            or DriveMediaType.Floppy525DD or DriveMediaType.Floppy525HD)
+        {
+            return await MountFloppyImageAsync(imagePath, letter, ct);
+        }            
+
+        throw new NotSupportedException($"DiscUtils backend does not support media type {mediaType}.");
+    }
+
+    private async Task<char> MountFloppyImageAsync(string imagePath, char letter, CancellationToken ct)
+    {
+        var tempDir = Path.Combine(Path.GetTempPath(), $"RPMulate_{letter}_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+
+        await Task.Run(() =>
+        {
+            using var fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read);
+
+            var fileSys = DetectFileSystem(fs);
+
+            if (fs != null)
+            {
+                ExtractFilesRecursive(fileSys.Root, tempDir);
+            }
+            else
+            {
+                throw new NotSupportedException("Unable to detect filesystem in floppy image.");
+            }
+        }, ct);
+
+        var substCmd = $"subst {letter}: \"{tempDir}\"";
+        var psi = new ProcessStartInfo("cmd.exe", $"/c {substCmd}")
+        {
+            CreateNoWindow = true,
+            UseShellExecute = false
+        };
+
+        using var proc = Process.Start(psi);
+        await proc.WaitForExitAsync(ct);
+
+        if (proc.ExitCode != 0)
+        {
+            Directory.Delete(tempDir, true);
+            throw new InvalidOperationException($"Failed to mount floppy image: subst exited with {proc.ExitCode}");
+        }
+
+        _mountedTempDirs[letter] = tempDir;
+
+        return letter;
+    }
+
+    private DiscFileSystem? DetectFileSystem(Stream stream)
+    {
+        stream.Position = 0;
+        if (FatFileSystem.Detect(stream))
+        {
+            stream.Position = 0;
+            return new FatFileSystem(stream);
+        }
+
+        return null;
+    }
+
+    private void ExtractFilesRecursive(DiscDirectoryInfo sourceDir, string targetDir)
+    {
+        foreach (var file in sourceDir.GetFiles())
+        {
+            var targetPath = Path.Combine(targetDir, file.Name);
+            using var sourceStream = file.OpenRead();
+            using var targetStream = File.Create(targetPath);
+            sourceStream.CopyTo(targetStream);
+
+            File.SetCreationTime(targetPath, file.CreationTime);
+            File.SetLastWriteTime(targetPath, file.LastWriteTime);
+        }
+
+        foreach (var dir in sourceDir.GetDirectories())
+        {
+            var targetPath = Path.Combine(targetDir, dir.Name);
+            Directory.CreateDirectory(targetPath);
+            ExtractFilesRecursive(dir, targetPath);
+        }
+    }
+
+    private readonly Dictionary<char, string> _mountedTempDirs = new();
 
     // -- Utilities ---------------------------------------------------
 

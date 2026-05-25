@@ -46,13 +46,7 @@
                 <!-- App title + tagline -->
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                        <!-- Ghost icon -->
-                        <Image
-                            Source="/Views/ghost.png"
-                            Width="29"
-                            Height="37"
-                            />
-                        <TextBlock Text="RPMulate"
+                        <TextBlock Text="💿 RPMulate"
                                    FontFamily="{StaticResource UIFont}"
                                    FontSize="22"
                                    FontWeight="Bold"
@@ -236,46 +230,62 @@
 
                                         <!-- Action buttons -->
                                         <StackPanel Grid.Column="2"
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
+            Orientation="Horizontal"
+            VerticalAlignment="Center">
+
+                                            <!-- Remove Button -->
+                                            <Button Style="{StaticResource DangerButton}"
+            Command="{Binding RemoveCommand}"
+            ToolTip="Remove this drive"
+            Margin="0,0,6,0"
+            Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE738;"
+                       FontFamily="{StaticResource IconFont}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Remove" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
 
                                             <Button Style="{StaticResource ActionButtonBrowse}"
-                                                    Command="{Binding BrowseCommand}"
-                                                    ToolTip="Browse for an image file"
-                                                    Margin="0,0,6,0"
-                                                    Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
+            Command="{Binding BrowseCommand}"
+            ToolTip="Browse for an image file"
+            Margin="0,0,6,0"
+            Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xED25;"
-                                                               FontFamily="{StaticResource IconFont}"
-                                                               FontSize="13"
-                                                               VerticalAlignment="Center"
-                                                               Margin="0,0,6,0"/>
+                       FontFamily="{StaticResource IconFont}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"/>
                                                     <TextBlock Text="Browse" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </Button>
 
                                             <Button Style="{StaticResource PrimaryButton}"
-                                                    Command="{Binding MountCommand}"
-                                                    Visibility="{Binding CanMount, Converter={StaticResource BoolToVis}}">
+            Command="{Binding MountCommand}"
+            Visibility="{Binding CanMount, Converter={StaticResource BoolToVis}}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE768;"
-                                                               FontFamily="{StaticResource IconFont}"
-                                                               FontSize="13"
-                                                               VerticalAlignment="Center"
-                                                               Margin="0,0,6,0"/>
+                       FontFamily="{StaticResource IconFont}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"/>
                                                     <TextBlock Text="Mount" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </Button>
 
                                             <Button Style="{StaticResource DangerButton}"
-                                                    Command="{Binding EjectCommand}"
-                                                    Visibility="{Binding CanEject, Converter={StaticResource BoolToVis}}">
+            Command="{Binding EjectCommand}"
+            Visibility="{Binding CanEject, Converter={StaticResource BoolToVis}}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE7AD;"
-                                                               FontFamily="{StaticResource IconFont}"
-                                                               FontSize="13"
-                                                               VerticalAlignment="Center"
-                                                               Margin="0,0,6,0"/>
+                       FontFamily="{StaticResource IconFont}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Margin="0,0,6,0"/>
                                                     <TextBlock Text="Eject" VerticalAlignment="Center"/>
                                                 </StackPanel>
                                             </Button>
