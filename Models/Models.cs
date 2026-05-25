@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PhantomDrive.Models;
+namespace RPMulate.Models;
 
 // -- Drive type definitions ------------------------------------------
 public enum DriveMediaType

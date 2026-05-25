@@ -4,9 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using PhantomDrive.Models;
+using RPMulate.Models;
 
-namespace PhantomDrive.Services;
+namespace RPMulate.Services;
 
 /// <summary>
 /// Manages the lifecycle of virtual disk drives on Windows.

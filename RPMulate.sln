@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36915.13 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualDriveManager", "VirtualDriveManager.csproj", "{5C02B039-ECD5-F163-DDF7-E139B99D399B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RPMulate", "RPMulate.csproj", "{5C02B039-ECD5-F163-DDF7-E139B99D399B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

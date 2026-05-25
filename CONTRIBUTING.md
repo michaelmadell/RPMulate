@@ -1,8 +1,8 @@
-# Contributing to PhantomDrive
+# Contributing to RPMulate
 
-Thanks for your interest in contributing to PhantomDrive.
+Thanks for your interest in contributing to RPMulate.
 
-PhantomDrive is a tool to mount disk images and simulate various drive types and speeds. This document explains how to contribute changes, report issues, and propose improvements.
+RPMulate is a tool to mount disk images and simulate various drive types and speeds. This document explains how to contribute changes, report issues, and propose improvements.
 
 ## Ways to contribute
 
@@ -43,8 +43,8 @@ General setup steps:
 Example workflow:
 
 ```bash
-git clone https://github.com/<your-username>/PhantomDrive.git
-cd PhantomDrive
+git clone https://github.com/michaelmadell/RPMulate.git
+cd RPMulate
 git checkout -b my-change
 ```
 

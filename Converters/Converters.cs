@@ -1,11 +1,11 @@
-namespace PhantomDrive.Converters
+namespace RPMulate.Converters
 {
 using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
-using PhantomDrive.Models;
+using RPMulate.Models;
 
     public class InverseBoolToVisibilityConverter : IValueConverter
 {

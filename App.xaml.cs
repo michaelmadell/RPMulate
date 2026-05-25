@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace PhantomDrive
+namespace RPMulate
 {
     public partial class App : Application { }
 }

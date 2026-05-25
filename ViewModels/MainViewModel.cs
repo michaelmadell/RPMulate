@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using PhantomDrive.Models;
-using PhantomDrive.Services;
+using RPMulate.Models;
+using RPMulate.Services;
 
-namespace PhantomDrive.ViewModels;
+namespace RPMulate.ViewModels;
 
 // ===================================================================
 //  Relay command (simple ICommand)

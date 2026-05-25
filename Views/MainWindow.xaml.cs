@@ -3,10 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using PhantomDrive.Models;
-using PhantomDrive.ViewModels;
+using RPMulate.Models;
+using RPMulate.ViewModels;
 
-namespace PhantomDrive.Views
+namespace RPMulate.Views
 {
     public partial class MainWindow : Window
     {
