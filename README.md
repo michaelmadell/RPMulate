@@ -1,4 +1,6 @@
-# RPMulate - Virtual Disk Manager
+# RPMulate
+
+*Mount disk images. Emulate drive behavior.*
 
 A Windows desktop application (WPF / .NET 8) that lets you mount disc images as virtual drives with **realistic speed emulation** for CD, DVD, Blu-ray, and floppy media.
 
